@@ -1,14 +1,23 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import CaloriesOutput from '../components/CaloriesOutput/CaloriesOutput';
 import { CaloriesContext } from '../store/calories-context';
 import { getDateMinusDays } from '../util/date';
+import { fetchCalories } from '../util/http';
 
 
 
 
 function RecentCalories(){
   const CaloriesCtx= useContext(CaloriesContext);
+  useEffect(()=>{
+    async function getCalories(){
+    const calories=await fetchCalories();
+    }
+    getCalories();
+  },[]);
+
+
   const recentCalories=CaloriesCtx.calories.filter((calories)=>{
     const today=new Date();
     const date7DaysAgo= getDateMinusDays(today,7);

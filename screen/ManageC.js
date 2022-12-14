@@ -6,14 +6,17 @@ import { GlobalStyles } from '../constants/styles';
 import Buttons from '../components/UI/Buttons';
 import { CaloriesContext } from '../store/calories-context';
 import CaloriesForm from '../components/ManageCalories/CaloriesForm';
+import { storeCalories } from '../util/http';
 function ManageC({ route, navigation }) {
 
     const caloiresCtx = useContext(CaloriesContext);
     const editedCaloriesId = route.params?.caloriesId;
     const isEditing = !!editedCaloriesId;
+
+    const selectedCalories=caloiresCtx.calories.find((calories )=>calories.id ===editedCaloriesId)
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: isEditing ? 'Edit Calories' : 'Add Calories'
+            title: isEditing ? 'Edit Calories' : 'Add Calories',
         });
 
     }, [navigation, isEditing]);
@@ -28,11 +31,12 @@ function ManageC({ route, navigation }) {
         navigation.goBack();
 
     }
-    function confirmHandler() {
+    function confirmHandler(caloriesData) {
         if (isEditing) {
-            caloiresCtx.addCalories(editedCaloriesId, { description: '!!!test', amount: 14, date: new Date('2022-12-10') });
+            caloiresCtx.addCalories(editedCaloriesId,caloriesData );
         } else {
-            caloiresCtx.addCalories({ description: 'test', amount: 19, date: new Date('2022-11-15') });
+            storeCalories(caloriesData);
+            caloiresCtx.addCalories(caloriesData);
         }
         navigation.goBack();
 
@@ -42,13 +46,13 @@ function ManageC({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <CaloriesForm />
-            <View>
-                <Buttons mode="flat" onPress={cancelHandler}>
-                    CALNCEL
-                </Buttons>
-                <Buttons onPress={confirmHandler}>{isEditing ? 'Update' : 'Add'}</Buttons>
-            </View>
+            <CaloriesForm
+             submitButtonLabel={isEditing ? 'Update' : 'Add'} 
+             onSubmit={confirmHandler}
+             onCancel={cancelHandler}
+             defaultValues={selectedCalories}
+             />
+           
             {isEditing && (
                 <View style={styles.deleteContainer}>
                     <IconButton

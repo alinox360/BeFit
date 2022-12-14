@@ -48,6 +48,11 @@ function CaloriesOverview() {
         tabBarIcon: ({ color, size }) => <Ionicons name="calendar" size={size} color={color} />
       }} />
       <BottomTabs.Screen name="Goals" component={Goals}
+      option={{
+        title:'Goals',
+        tabBarLabel:'Goals',
+        tabBarIcon:({color,size})=><Ionicons name="heart" size={size} color={color}/>
+      }}
       />
 
 
